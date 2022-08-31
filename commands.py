@@ -45,6 +45,7 @@ def retrieveEpochs():
             print("Training with " + str(epochs) + " epochs")
             return epochs
 
+# Setzt mit dem Training eines Modells fort
 def continueTraining(shape, batch_size):
     modelToLoad = retrieveModel()
     dataPath = askdirectory()
@@ -74,6 +75,7 @@ def continueTraining(shape, batch_size):
     os.rename("models/saves/" + modelToLoad + ".h5", "models/saves/" + modelToLoad + "old.h5")
     model.save("models/saves/" + modelToLoad + ".h5")
 
+# Fragt das aufzurufende Modell ab
 def retrieveModel():
     print("Welches Modell soll getestet/trainiert werden? unspecific oder specific?")
 
@@ -94,6 +96,7 @@ def retrieveModel():
         else:
             print("Kein gültiges Modell, nochmal versuchen")
 
+# Evaluiert eine Bildeingabe
 def processImage(image, modelToTest):
     modelToLoad = modelToTest + ".h5"
     model = models.load_model("models/saves/" + modelToLoad)
@@ -103,6 +106,7 @@ def processImage(image, modelToTest):
     pred = model.predict(input_arr)
 
     if modelToTest == "unspecific":
+        # Stellt die Wahrscheinlichkeit eines Gesichts dar, gerundet auf 
         probFace = round((100 - pred[0,0] * 100), ndigits=2)
 
         print("Probability face: " + str(probFace) + "%")
@@ -120,6 +124,7 @@ def processImage(image, modelToTest):
         
         people = [x[0] for x in os.walk('./pictures/specific/lfw')]
 
+# TODO: Interpretieren der Resultate
         namesPeople = {}
         index = 0
         for names in people:
@@ -136,8 +141,9 @@ def processImage(image, modelToTest):
 
     return probFace
 
+# Testet das Modell
 def testModel(modelToTest):
-
+    # Oeffnet Fenster, um ein Bild auszuwählen
     tk.Tk().withdraw()
     filename = askopenfilename()
     print(filename)
@@ -166,6 +172,7 @@ def showPicturesFromDataset(dataset):
             
     plt.show()
 
+# Erzeugt ein neues Modell und trainiert es
 def trainNewModel(model, epochs, shape, batch_size):
     people = 0
 
