@@ -1,14 +1,8 @@
 try:
-    from time import sleep
-    from picamera import PiCamera
-
-    camera = PiCamera()
-    camera.resolution = (2592, 1944)
-    camera.start_preview()
+    import os
     
-    def takePicture(filename):
-        sleep(3)
-        camera.capture('facePhoto.jpg')
+    def takePicture():
+        os.system('libcamera-jpeg --ev 0.5 -o picture.jpg --width 250 --height 250')
 
 except:
-    print("An Error has occurred initializing the PiCamera")
+    print("An Error has occurred utilizing the camera. Make sure your computer supports libcamera/has a camera attached. ")
