@@ -16,6 +16,7 @@ def create_dss(directory, labels, image_size, batch_size):
          labels=labels,
          validation_split=0.2,
          subset="training",
+         shuffle=False,
          image_size=image_size,
          batch_size=batch_size)
      
@@ -24,6 +25,7 @@ def create_dss(directory, labels, image_size, batch_size):
          labels=labels,
          validation_split=0.2,
          subset="validation",
+         shuffle=False,
          image_size=image_size,
          batch_size=batch_size)
     return trainDs, valDs
