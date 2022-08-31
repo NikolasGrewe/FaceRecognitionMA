@@ -101,19 +101,21 @@ def processImage(image, modelToTest):
     modelToLoad = modelToTest + ".h5"
     model = models.load_model("models/saves/" + modelToLoad)
     
+    # Bereitet das Bild bzw. den entsprechenden Tensor auf das Modell vor
     input_arr = tf.keras.preprocessing.image.img_to_array(image)
     input_arr = tf.expand_dims(input_arr, 0)
+    
     pred = model.predict(input_arr)
 
     if modelToTest == "unspecific":
-        # Stellt die Wahrscheinlichkeit eines Gesichts dar, gerundet auf 
+        # Stellt die Wahrscheinlichkeit eines Gesichts dar, gerundet auf zwei Nachkommastellen
         probFace = round((100 - pred[0,0] * 100), ndigits=2)
 
         print("Probability face: " + str(probFace) + "%")
     else:
         probFace = 0
         biggest = 0
-# TODO: Sortiermechanismus einbauen: Sortieren nach Ähnlichkeit
+# TODO: Sortiermechanismus einbauen: Sortieren nach Ähnlichkeit. Erlaubt, mehrere Personenähnlichkeiten darzustellen
         for detected in pred[0]:
             if detected > biggest:
                 biggest = detected
