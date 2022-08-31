@@ -16,7 +16,7 @@ def create_dss(directory, labels, image_size, batch_size):
          labels=labels,
          validation_split=0.2,
          subset="training",
-         shuffle=False,
+         seed=2004,
          image_size=image_size,
          batch_size=batch_size)
      
@@ -25,7 +25,7 @@ def create_dss(directory, labels, image_size, batch_size):
          labels=labels,
          validation_split=0.2,
          subset="validation",
-         shuffle=False,
+         seed=2004,
          image_size=image_size,
          batch_size=batch_size)
     return trainDs, valDs
@@ -104,7 +104,7 @@ def processImage(image, modelToTest):
     # Bereitet das Bild bzw. den entsprechenden Tensor auf das Modell vor
     input_arr = tf.keras.preprocessing.image.img_to_array(image)
     input_arr = tf.expand_dims(input_arr, 0)
-    
+
     pred = model.predict(input_arr)
 
     if modelToTest == "unspecific":

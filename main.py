@@ -31,7 +31,7 @@ while quit == False:
                 print("There has been an error utilizing the PiCamera")
 
         if action == "continue training":
-            continueTraining(image_size_train + (3,), batch_size_train)
+            continueTraining(image_size_train, batch_size_train)
     else:
         print("Kein gültiger Command\n")
 
