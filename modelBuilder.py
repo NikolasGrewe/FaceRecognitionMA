@@ -48,8 +48,10 @@ def create_model_basic(input_shape):
     outputs = layers.Dense(1, activation="sigmoid")(x)
     return keras.Model(inputs, outputs)
 
-
 # Model 2: Spezifische Gesichterkennung
+'''
+Erstellt das spezifische Modell. outs ist die Anzahl Gesichter, input_shape die Auflösung des Bildes.
+'''
 def create_specific_model(input_shape, outs):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
@@ -67,15 +69,11 @@ def create_specific_model(input_shape, outs):
 
     previous_block_activation = x 
 
-    for size in [128, 256, 512, 728]:
+    for size in [128, 256, 512, 1024]:
         x = layers.Activation("relu")(x)
         x = layers.SeparableConv2D(size, 3, padding="same")(x)
         x = layers.BatchNormalization()(x)
-
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
+        
         x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
 
         residual = layers.Conv2D(size, 1, strides=2, padding="same")(
@@ -85,12 +83,27 @@ def create_specific_model(input_shape, outs):
         x = layers.add([x, residual])
         previous_block_activation = x
 
-    x = layers.SeparableConv2D(1024, 3, padding="same")(x)
+    x = layers.SeparableConv2D(512, 3, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
 
     x = layers.GlobalAveragePooling2D()(x)
 
-    x = layers.Dropout(0.5)(x)
+    x = layers.Dropout(0.4)(x)
     outputs = layers.Dense(outs, activation="softmax")(x)
     return keras.Model(inputs, outputs)
+
+# Experimentierbereich
+'''
+def create_specific_model(input_shape, outs):
+    inputs = keras.Input(shape=input_shape)
+    
+    x = layers.RandomRotation(factor=0.3)(inputs)
+    x = layers.RandomFlip(mode="horizontal")(x)
+    
+    #x = layers.Embedding(20, 100)(x)
+    x = layers.GRU(units=32, dropout=0.2, recurrent_dropout=0.2)(x)
+    outputs = layers.Dense(outs, activation="softmax")(x)
+    
+    return keras.Model(inputs, outputs)
+'''

@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
-from keras import models
+import keras
 import tensorflow as tf
 import tkinter as tk 
 import modelBuilder
+import os
 from tkinter.filedialog import askopenfilename, askdirectory
-from piCameraFunction import *
+from keras import models
+from modelBuilder import *
 
 # Commands
 commands = ["train", "predict", "help", "quit", "photo", "continue training"]
@@ -16,19 +18,27 @@ def create_dss(directory, labels, image_size, batch_size):
          labels=labels,
          validation_split=0.2,
          subset="training",
-         seed=2004,
+         seed=8967,
          image_size=image_size,
-         batch_size=batch_size)
+         batch_size=batch_size
+    )
      
     valDs = tf.keras.preprocessing.image_dataset_from_directory(
          directory,
          labels=labels,
          validation_split=0.2,
          subset="validation",
-         seed=2004,
+         seed=8967,
          image_size=image_size,
-         batch_size=batch_size)
+         batch_size=batch_size
+    )
     return trainDs, valDs
+
+def takePicture():
+    try:
+        os.system('libcamera-jpeg --ev 0.5 -o picture.jpg --width 250 --height 250')
+    except:
+        print("An Error has occurred utilizing the camera. Make sure your computer supports libcamera/has a camera attached. ")
 
 def retrieveEpochs():
     print("Wie viele Epochs? ")
@@ -53,7 +63,7 @@ def continueTraining(shape, batch_size):
 
     #Erzeugt neue Datensätze basierend auf den Daten im angegebenen Ordner
     model = models.load_model("models/saves/" + modelToLoad + ".h5")
-    trainData, valData = create_dss(dataPath, 'inferred', shape, batch_size)
+    trainData, valData = create_dss(dataPath, "inferred", shape, batch_size)
 
     if modelToLoad == "unspecific":
         model.compile(
@@ -63,7 +73,7 @@ def continueTraining(shape, batch_size):
         )
     else:
         model.compile(
-            optimizer=tf.keras.optimizers.Adam(1e-3), 
+            optimizer=tf.keras.optimizers.Adamax(), 
             loss=tf.keras.losses.SparseCategoricalCrossentropy(),
             metrics=['acc']
         )
@@ -72,7 +82,7 @@ def continueTraining(shape, batch_size):
     model.fit(trainData, epochs=epochs, validation_data=valData)
 
     #Speichert und kennzeichnet das alte Modell; Das neue Modell wird gespeichert
-    os.rename("models/saves/" + modelToLoad + ".h5", "models/saves/" + modelToLoad + "old.h5")
+    #os.rename("models/saves/" + modelToLoad + ".h5", "models/saves/" + modelToLoad + "old.h5")
     model.save("models/saves/" + modelToLoad + ".h5")
 
 # Fragt das aufzurufende Modell ab
@@ -120,13 +130,18 @@ def processImage(image, modelToTest):
             if detected > biggest:
                 biggest = detected
         
+        # Fordert den Index der grössten Zahl
         for i in range(len(pred[0])):
             if pred[0,i] == biggest:
                 probFace = i
         
-        people = [x[0] for x in os.walk('./pictures/specific/lfw')]
+        # Namen der Personen in einer Liste darstellen
+        people = [x[1] for x in os.walk('./pictures/specific/TrainingSet2')]
+        npeople = len([x[0] for x in os.walk('./pictures/specific/TrainingSet2')])
+        people = people[0][:npeople]
+        print(people)
 
-# TODO: Interpretieren der Resultate
+# TODO: Interpretieren der Resultate DONE
         namesPeople = {}
         index = 0
         for names in people:
@@ -146,8 +161,8 @@ def processImage(image, modelToTest):
 # Testet das Modell
 def testModel(modelToTest):
     # Oeffnet Fenster, um ein Bild auszuwählen
-    tk.Tk().withdraw()
     filename = askopenfilename()
+    tk.Tk().withdraw()
     print(filename)
 
     image = tf.keras.preprocessing.image.load_img(filename, target_size=(250, 250))
@@ -180,30 +195,44 @@ def trainNewModel(model, epochs, shape, batch_size):
 
     if model == "unspecific":
         # Basis-Trainingsdatensätze erzeugen
-        trainDsUnspec, valDsUnspec = create_dss("pictures/unspecific/TrainingSet", 'inferred', shape, batch_size)
+        trainDsUnspec, valDsUnspec = create_dss("./pictures/unspecific/TrainingSet/", 'inferred', shape, batch_size)
 
-        showPicturesFromDataset(trainDsUnspec)
+        trainDsUnspec = trainDsUnspec.prefetch(buffer_size=32)
+        valDsUnspec = valDsUnspec.prefetch(buffer_size=32)
+
     else:
-        trainDsSpec, valDsSpec = create_dss("pictures/specific/lfw/", "inferred", shape, batch_size)
+        '''
+        trainDsSpec = tf.keras.preprocessing.image_dataset_from_directory(
+         "./pictures/specific/TrainingSet2/",
+         "inferred",
+         seed=2004,
+         image_size=shape,
+         batch_size=batch_size
+        )
+        '''
+        
+        trainDsSpec, valDsSpec = create_dss("./pictures/specific/TrainingSet2", 'inferred', shape, batch_size)
+        
+        trainDsSpec = trainDsSpec.prefetch(buffer_size=32)
 
-        people = [x[0] for x in os.walk('./pictures/specific/lfw')]
+        people = [x[0] for x in os.walk('./pictures/specific/TrainingSet2')]
         npeople = len(people) - 1
 
         showPicturesFromDataset(trainDsSpec)
 
     if model == "unspecific":
         # Erstes Modell erstellen
-        model1 = modelBuilder.create_model_basic(input_shape=shape + (3,))
+        model1 = create_model_basic(input_shape=shape + (3,))
 
         model1.compile(
-            optimizer=tf.keras.optimizers.Adam(1e-3),
-            loss=tf.keras.losses.BinaryCrossentropy(),
+            optimizer=keras.optimizers.Adam(1e-3),
+            loss=keras.losses.BinaryCrossentropy(),
             metrics=['acc']
         )
 
         # Trainieren und Testen
         print("Training model1")
-        history = model1.fit(trainDsUnspec, epochs=epochs, validation_data=valDsUnspec)
+        history = model1.fit(trainDsUnspec, epochs=epochs, validation_data=valDsUnspec, use_multiprocessing=True)
 
         # Modell speichern
         model1.save('models/saves/unspecific.h5')
@@ -217,7 +246,7 @@ def trainNewModel(model, epochs, shape, batch_size):
         model2 = modelBuilder.create_specific_model(input_shape=shape + (3,), outs=npeople)
 
         model2.compile(
-            optimizer=tf.keras.optimizers.Adam(1e-3), 
+            optimizer=tf.keras.optimizers.RMSprop(), 
             loss=tf.keras.losses.SparseCategoricalCrossentropy(),
             metrics=['acc']
         )

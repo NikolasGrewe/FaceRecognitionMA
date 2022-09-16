@@ -34,4 +34,3 @@ while quit == False:
             continueTraining(image_size_train, batch_size_train)
     else:
         print("Kein gültiger Command\n")
-
