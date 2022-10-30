@@ -1,6 +1,10 @@
 import matplotlib.pyplot as plt
 
 def createGraphValTrainLoss(history, epochs, name):
+    '''
+    Erstellt ein Diagramm des Losses. 
+
+    '''
     loss = history.history['loss']
     val_loss = history.history['val_loss']
     
@@ -17,6 +21,9 @@ def createGraphValTrainLoss(history, epochs, name):
     plt.show()
     
 def createGraphValTrainAcc(history, epochs, name):
+    '''
+    Erstellt ein Diagramm der Genauigkeiten. 
+    '''
     loss = history.history['acc']
     val_loss = history.history['val_acc']
     

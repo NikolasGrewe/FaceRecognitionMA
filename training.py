@@ -112,7 +112,7 @@ def continueTraining(shape, batch_size):
         ]
         
         model.compile(
-            optimizer=tf.keras.optimizers.RMSprop(1e-3),
+            optimizer=tf.keras.optimizers.RMSprop(0.5e-3),
             loss=tf.keras.losses.BinaryCrossentropy(),
             metrics=['acc']
         )
@@ -127,12 +127,12 @@ def continueTraining(shape, batch_size):
         ]
         
         model.compile(
-            optimizer=tf.keras.optimizers.RMSprop(1e-3), 
+            optimizer=tf.keras.optimizers.RMSprop(0.5e-3), 
             loss=tf.keras.losses.SparseCategoricalCrossentropy(),
             metrics=['acc']
         )
 
-    # Trainiert das Modell weiter: kein Datenverlust
+    # Trainiert das Modell weiter
     history = model.fit(trainData, epochs=epochs, validation_data=valData, callbacks=callbacks)
     
     createGraphValTrainAcc(history, epochs, "Continued")
