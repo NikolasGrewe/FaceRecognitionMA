@@ -56,7 +56,6 @@ def processImage(image, modelToTest):
 #       Den Index im Dictionary abrufen
         print(namesPeople[probFace])
 
-# Derzeitiges Bild mit Vorhersage darstellen
     plt.figure(figsize=(10, 10))
     plt.imshow(image)
     plt.title(str(probFace))

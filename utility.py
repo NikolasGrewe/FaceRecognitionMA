@@ -26,7 +26,6 @@ def create_dss(directory, labels, image_size, batch_size):
     
     return trainDs, valDs
 
-# Speichern des besten Checkpoints als Hauptdatei
 def saveCheckpoints(model, modelToSave):
     checkpoints = ["./models/callbacks/" + model + "/" + name for name in os.listdir("./models/callbacks/" + model)]
     if checkpoints:
@@ -57,7 +56,6 @@ def retrieveModel():
         else:
             print("Kein gültiges Modell, nochmal versuchen")
             
-# Fragt die Epochs ab
 def retrieveEpochs():
     print("Wie viele Epochs? ")
 
