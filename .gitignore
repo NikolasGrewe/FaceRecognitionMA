@@ -5,12 +5,6 @@ model.png
 
 unspecificLosses.png
 unspecificAccs.png
-Tabels/UnspecificCSVs/UnspecificWithPrecision.xlsx
-Tabels/UnspecificCSVs/unspecific.csv
-Tabels/UnspecificCSVs/Daten_unspecific_25Epochs_1.xlsx
-Tabels/SpecificCSVs/SpecificNetwork1.xlsx
-Tabels/SpecificCSVs/Specific2.xlsx
-Tabels/SpecificCSVs/specific.csv
 Tabels/ProgramArchitecture.graphml
 Tabels/plots/RMSprop/Unspecific_RMSprop1e-3_loss_2.png
 Tabels/plots/RMSprop/Unspecific_RMSprop1e-3_loss.png
