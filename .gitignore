@@ -2,6 +2,7 @@
 model.png
 *.jpg
 *.mp4
+*.xlsx
 
 unspecificLosses.png
 unspecificAccs.png
