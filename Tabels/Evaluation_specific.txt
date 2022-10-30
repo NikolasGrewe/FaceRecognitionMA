@@ -1,0 +1,13 @@
+Test loss: 0.168627; Test accuracy: 0.969697 
+Test loss: 0.046031; Test accuracy: 0.969697 
+Test loss: 0.118007; Test accuracy: 0.939394 
+Test loss: 0.001826; Test accuracy: 1.000000 
+Test loss: 0.012942; Test accuracy: 1.000000 
+Test loss: 0.037489; Test accuracy: 0.985075 
+Test loss: 2.580588; Test accuracy: 0.537313 
+Test loss: 0.027989; Test accuracy: 0.985075 
+Test loss: 0.110284; Test accuracy: 0.964286 
+Test loss: 2.356334; Test accuracy: 0.330357 
+Test loss: 2.380817; Test accuracy: 0.339286 
+Test loss: 2.380805; Test accuracy: 0.339286 
+Test loss: 0.110285; Test accuracy: 0.964286 
