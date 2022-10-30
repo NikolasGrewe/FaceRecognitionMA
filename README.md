@@ -25,4 +25,4 @@ Um die Netzwerke zu trainieren, muss ein Datensatz in ./pictures/unspecific/ bzw
 Dieser muss den folgenden Aufbau haben:
 
 - Unspecific: Der Name des Sets soll TrainingSet sein. Zwei Ordner sollen hier vertreten sein: "No Faces" und "Faces". Welche Dateien in welchen Ordner gehören ist selbsterklärend.
-- Specific: Der Name des Sets soll TrainingSet2 sein. Für jede Person soll ein Ordner mit den der Person entsprechenden Bilder vertreten sein. 
+- Specific: Der Name des Sets soll TrainingSet sein. Für jede Person soll ein Ordner mit den der Person entsprechenden Bilder vertreten sein. 
