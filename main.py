@@ -1,14 +1,17 @@
 # Imports
 from commands import *
+from utility import *
+from training import *
 
 # Wichtige Bildeigenschaften
 image_size_train = (250, 250)
 batch_size_train = 33
 
 # Interaktionen
-quit = False
-while quit == False:
+quit = True
+while quit:
     action = input("Tippe help für Befehle oder gebe einen Befehl ein: ")
+    action = action.lower()
 
     if action in commands:
         if action == "train":
@@ -19,18 +22,21 @@ while quit == False:
             pred = testModel(retrieveModel())
 
         if action == "help":
-            print("train: Trainiere ein Modell\npredict: Evaluiere ein Bild\nphoto: Mache ein Bild mit der PiCamera und evaluiere es (setzt PiCamera voraus)\ncontinue training: helpSetze das Training eines Modells fort\nquit: Verlasse das Programm\n")
+            print("train: Trainiere ein Modell\npredict: Evaluiere ein Bild\nphoto: Mache ein Bild mit der PiCamera und evaluiere es (setzt PiCamera voraus)\ncontinue training: Setze das Training eines Modells fort\nevaluate: Evaluiere ein Netzwerk\nquit: Verlasse das Programm\n")
 
         if action == "quit":
-            quit = True    
+            quit = False    
 
         if action == "photo":
             try:
-                pred = processImage(takePhoto(), retrieveModel())
+                pred = processImage(takePhoto('photo'), retrieveModel())
             except:
                 print("There has been an error utilizing the PiCamera")
 
         if action == "continue training":
             continueTraining(image_size_train, batch_size_train)
+            
+        if action == "evaluate":
+            evaluateModel(retrieveModel(), "./Tabels/")
     else:
         print("Kein gültiger Command\n")

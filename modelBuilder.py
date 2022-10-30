@@ -4,9 +4,12 @@ from keras import layers
 
 # Model 1: Unspezifische Gesichtserkennung: Kleines XCeption Model
 def create_model_basic(input_shape):
-    inputs = keras.Input(shape=input_shape)
+    '''
+    Erstellt das unspezifische Modell. "input_shape" ist die Auflösung des Bildes
+    '''
+    inputs = keras.Input(input_shape)
     # Image augmentation block
-    x = layers.RandomRotation(factor=0.3)(inputs)
+    x = layers.RandomRotation(factor=0.2)(inputs)
     x = layers.RandomFlip(mode="horizontal")(x)
     
     x = layers.Rescaling(1.0 / 255)(x)
@@ -46,16 +49,17 @@ def create_model_basic(input_shape):
 
     x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(1, activation="sigmoid")(x)
+    
     return keras.Model(inputs, outputs)
 
 # Model 2: Spezifische Gesichterkennung
-'''
-Erstellt das spezifische Modell. outs ist die Anzahl Gesichter, input_shape die Auflösung des Bildes.
-'''
 def create_specific_model(input_shape, outs):
-    inputs = keras.Input(shape=input_shape)
+    '''
+    Erstellt das spezifische Modell. "outs" ist die Anzahl Gesichter, "input_shape" die Auflösung des Bildes.
+    '''
+    inputs = keras.Input(input_shape)
     # Image augmentation block
-    x = layers.RandomRotation(factor=0.3)(inputs)
+    x = layers.RandomRotation(factor=0.2)(inputs)
     x = layers.RandomFlip(mode="horizontal")(x)
     
     x = layers.Rescaling(1.0 / 255)(x)
@@ -83,7 +87,7 @@ def create_specific_model(input_shape, outs):
         x = layers.add([x, residual])
         previous_block_activation = x
 
-    x = layers.SeparableConv2D(512, 3, padding="same")(x)
+    x = layers.SeparableConv2D(1152, 3, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
 
@@ -92,18 +96,3 @@ def create_specific_model(input_shape, outs):
     x = layers.Dropout(0.4)(x)
     outputs = layers.Dense(outs, activation="softmax")(x)
     return keras.Model(inputs, outputs)
-
-# Experimentierbereich
-'''
-def create_specific_model(input_shape, outs):
-    inputs = keras.Input(shape=input_shape)
-    
-    x = layers.RandomRotation(factor=0.3)(inputs)
-    x = layers.RandomFlip(mode="horizontal")(x)
-    
-    #x = layers.Embedding(20, 100)(x)
-    x = layers.GRU(units=32, dropout=0.2, recurrent_dropout=0.2)(x)
-    outputs = layers.Dense(outs, activation="softmax")(x)
-    
-    return keras.Model(inputs, outputs)
-'''
