@@ -8,21 +8,23 @@ from createDiagrams import *
 
 # Erzeugt ein neues Modell und trainiert es
 def trainNewModel(model, epochs, shape, batch_size):
-
-    if model == "unspecific":
-        # Basis-Trainingsdatensätze erzeugen
-        trainDsUnspec, valDsUnspec = create_dss("./pictures/unspecific/TrainingSet/", 'inferred', shape, batch_size)
-
-        trainDsUnspec = trainDsUnspec.prefetch(buffer_size=32)
-        valDsUnspec = valDsUnspec.prefetch(buffer_size=32)
-
-    else:
-        trainDsSpec, valDsSpec = create_dss("./pictures/specific/TrainingSet2/", 'inferred', shape, batch_size)
-        
-        trainDsSpec = trainDsSpec.prefetch(buffer_size=32)
-
-        people = [x[0] for x in os.walk('./pictures/specific/TrainingSet2')]
-        npeople = len(people) - 1
+    try:
+        if model == "unspecific":
+            # Basis-Trainingsdatensätze erzeugen
+            trainDsUnspec, valDsUnspec = create_dss("./pictures/unspecific/TrainingSet/", 'inferred', shape, batch_size)
+    
+            trainDsUnspec = trainDsUnspec.prefetch(buffer_size=32)
+            valDsUnspec = valDsUnspec.prefetch(buffer_size=32)
+    
+        else:
+            trainDsSpec, valDsSpec = create_dss("./pictures/specific/TrainingSet/", 'inferred', shape, batch_size)
+            
+            trainDsSpec = trainDsSpec.prefetch(buffer_size=32)
+    
+            people = [x[0] for x in os.walk('./pictures/specific/TrainingSet')]
+            npeople = len(people) - 1
+    except:
+        print("Der notwendige Datensatz existiert nicht.")
 
 # Training model unspecific
     if model == "unspecific":
@@ -112,7 +114,7 @@ def continueTraining(shape, batch_size):
         ]
         
         model.compile(
-            optimizer=tf.keras.optimizers.RMSprop(1e-3),
+            optimizer=tf.keras.optimizers.RMSprop(0.5e-3),
             loss=tf.keras.losses.BinaryCrossentropy(),
             metrics=['acc']
         )
@@ -127,7 +129,7 @@ def continueTraining(shape, batch_size):
         ]
         
         model.compile(
-            optimizer=tf.keras.optimizers.RMSprop(1e-3), 
+            optimizer=tf.keras.optimizers.RMSprop(0.5e-3), 
             loss=tf.keras.losses.SparseCategoricalCrossentropy(),
             metrics=['acc']
         )

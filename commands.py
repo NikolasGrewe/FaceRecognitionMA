@@ -7,6 +7,7 @@ from tkinter.filedialog import askopenfilename, askdirectory
 from keras import models
 from modelBuilder import *
 from subprocess import call
+import os
 
 # Commands
 commands = ["train", "predict", "help", "quit", "photo", "continue training", "evaluate"]
@@ -41,28 +42,32 @@ def processImage(image, modelToTest):
                 probFace = i
         
 #       Namen der Personen in einer Liste darstellen
-        people = [x[1] for x in os.walk('./pictures/specific/TrainingSet2')]
-        npeople = len([x[0] for x in os.walk('./pictures/specific/TrainingSet2')])
-        people = people[0][:npeople]
-        print(people)
-
-#       Dictionary aller Personennamen erstellen
-        namesPeople = {}
-        index = 0
-        for names in people:
-            namesPeople[index] = names
-            index += 1
-
-#       Den Index im Dictionary abrufen
-        print(namesPeople[probFace])
-
-    plt.figure(figsize=(10, 10))
-    plt.imshow(image)
-    plt.title(str(probFace))
-    plt.axis("off")
-    plt.show()
-
-    return probFace
+        try:
+            people = [x[1] for x in os.walk('./pictures/specific/TrainingSet')]
+            npeople = len([x[0] for x in os.walk('./pictures/specific/TrainingSet')])
+            people = people[0][:npeople]
+            print(people)
+        
+    #   Dictionary aller Personennamen erstellen
+            namesPeople = {}
+            index = 0
+            for names in people:
+                namesPeople[index] = names
+                index += 1
+        
+    #   Den Index im Dictionary abrufen
+            print(namesPeople[probFace])
+        
+            plt.figure(figsize=(10, 10))
+            plt.imshow(image)
+            plt.title(str(probFace))
+            plt.axis("off")
+            plt.show()
+        
+            return probFace
+        
+        except:
+            print("Der notwendige Datensatz existiert nicht.")
 
 # Testet das Modell
 def testModel(modelToTest):
